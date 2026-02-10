@@ -5,6 +5,24 @@ local Camera = workspace.CurrentCamera
 local LocalPlayer = Players.LocalPlayer
 local mouse = LocalPlayer:GetMouse()
 local UIS = game:GetService("UserInputService")
+local CoreGui = game:GetService("CoreGui")
+local HttpService = game:GetService("HttpService")
+
+-- ================= PROTECT GUI SYSTEM =================
+local ProtectedFolder = Instance.new("Folder")
+ProtectedFolder.Parent = cloneref(CoreGui)
+ProtectedFolder.Name = "RobloxGui"
+
+local function Protect(inst)
+    local HiddenUI = gethui or gethiddenui or get_hidden_ui or get_hui or get_h_ui
+    if inst and inst:IsA("GuiObject") then
+        inst.Parent = HiddenUI and HiddenUI() or cloneref(ProtectedFolder)
+        inst.Name = HttpService:GenerateGUID(false)
+    elseif inst then
+        inst.Parent = cloneref(ProtectedFolder)
+        inst.Name = HttpService:GenerateGUID(false)
+    end
+end
 
 -- ================= STATE =================
 local AIM_ENABLED = false
@@ -40,9 +58,10 @@ local RADIUS_OFFSET = 0
 local LOCKED_OFFSET = nil
 
 -- ================= GUI =================
-local gui = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
+local gui = Instance.new("ScreenGui")
 gui.ResetOnSpawn = false
 gui.DisplayOrder = 999999
+Protect(gui) -- << PROTECT GUI AKTIF
 
 local frame = Instance.new("Frame", gui)
 frame.Size = UDim2.new(0,260,0,355) -- + space for prediction
@@ -323,7 +342,6 @@ end)
 print("🔥 CURSOR AIMLOCK FINAL FULL SYSTEM LOADED (Q TOGGLE + RMB AUTO PAUSE + PREDICTION SYSTEM)")
 
 -- ================= SAVE / LOAD + VISIBILITY SYSTEM =================
-local HttpService = game:GetService("HttpService")
 local SAVE_FILE = "cursor_aimlock_settings.json"
 
 -- STATE EXTRA
